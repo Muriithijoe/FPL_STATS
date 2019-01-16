@@ -1,0 +1,603 @@
+{% load humanize %}
+{% load static %}
+
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    {% if title %}
+    <title>Fpl Stats - {{title}}</title>
+    {% else %}
+    <title>Fpl Stats</title>
+    {% endif %}
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Charm|Montserrat:300,400,500|Raleway:300,400|Josefin+Sans:400,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://unpkg.com/clipboard@2.0.0/dist/clipboard.min.js"></script>
+    <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <script
+  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+  crossorigin="anonymous"></script>
+  <script language="JavaScript" type="text/javascript" src="{% static 'tooltip.js' %}"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+  </head>
+  <body >
+    <div class="containeq">
+
+
+      <div class="intro">
+        <div class="row">
+            <div class="col-">
+        <img class="papa" src="https://www.premierleague.com/resources/ver/i/elements/premier-league-logo-header.svg">
+            </div>
+            <div class="col-6">
+                <br>
+                <span class="title">{{team_name}}</span> 
+                <br>
+                <span class="manager">by {{manager_name}} • gameweek {{gameweeks_played}}</span> 
+            </div>
+          </div>
+      </div>
+
+      <br>
+      <br>
+
+      <div class="row">
+        <div class="col-sm">
+          <span class="basic">Total Points</span>
+          <br>
+          <span class="number">{{total_points | intcomma }}</span>
+        </div>
+        <div class="col-sm">
+          <span class="basic">Overall Rank</span>
+          <br>
+          <span class="number">{{overall_rank | intcomma }}</span>
+        </div>
+        <div class="col-sm">
+          <span class="basic">Overall Top <span style="font-family: 'Charm', cursive;
+            font-size: 21px;">X%</span></span>
+          <br>
+          <span class="number">{{top_percent}}%</span>
+        </div>
+        <div class="col-sm">
+          <span class="basic">Team Value</span>
+          <br>
+          <span class="number">{{team_value}} M</span>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-sm">
+          <span class="basic">Wild Card</span>
+          <br>
+          <span class="number">{% if 'wildcard' in chips_used %}
+              played{%else%}
+              available{%endif%}</span>
+        </div>
+        <div class="col-sm">
+          <span class="basic">Bench Boost</span>
+          <br>
+          <span class="number">{% if 'bboost' in chips_used %}
+              played{%else%}
+              available{%endif%}</span>
+        </div>
+        <div class="col-sm">
+          <span class="basic">Free - Hit</span>
+          <br>
+          <span class="number">{% if 'freehit' in chips_used %}
+              played{%else%}
+              available{%endif%}</span>
+        </div>
+        <div class="col-sm">
+          <span class="basic">Triple Captain</span>
+          <br>
+          <span class="number">{% if '3xc' in chips_used %}
+              played{%else%}
+              available{%endif%}</span>
+        </div>
+      </div>
+
+      <br>
+      <br>
+      
+      <div class="row">
+        <div class="col-sm">
+          <span class="basic">Point Trends</span>
+          <table class="table table-striped table-borderless rounded-circle">
+              <tbody>
+                <tr>
+                  <td class='dimension'>Average Gameweek Points</td>
+                  <td class='metric'>{{average_gameweek_points}}</td>
+                </tr>
+                <tr>
+                  <td class='dimension'>Highest Gameweek Points</td>
+                  <td class='metric'>{{highest_gameweek_points}}</td>
+                </tr>
+                <tr>
+                  <td class='dimension'>Lowest Gameweek Points</td>
+                  <td class='metric'>{{lowest_gameweek_points}}</td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+        <div class="col-sm">
+          <span class="basic">Rank Trends</span>
+          <table class="table table-striped table-borderless rounded-circle">
+              <tbody>
+                <tr>
+                  <td class='dimension'>Average Gameweek Rank</td>
+                  <td class='metric'>{{average_gameweek_rank | intcomma }}</td>
+                </tr>
+                <tr>
+                  <td class='dimension'>Highest Gameweek Rank</td>
+                  <td class='metric'>{{highest_gameweek_rank | intcomma }}</td>
+                </tr>
+                <tr>
+                  <td class='dimension'>Lowest Gameweek Rank</td>
+                  <td class='metric'>{{lowest_gameweek_rank | intcomma }}</td>
+                </tr>
+              </tbody>
+            </table>
+        </div>     
+      </div>
+
+      <br>
+      <br>
+      
+
+      <div class="row">
+          <div class="col-sm">
+            <span class="basic">Captain Points</span>
+            <table class="table table-striped table-borderless rounded-circle">
+                <tbody>
+                  <tr>
+                    <td class='dimension'>Total Captain Points</td>
+                    <td class='metric'>{{total_captain_points | intcomma }}</td>
+                  </tr>
+                  <tr>
+                    <td class='dimension'>Total Capatin Points <span style="font-family: 'Charm', cursive;">X%</span></td>
+                    <td class='metric'>{{percent_captain_points}}%</td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+          <div class="col-sm">
+            <span class="basic">If you captained your . . .</span>
+            <table class="table table-striped table-borderless rounded-circle">
+                <tbody>
+                  <tr>
+                    <td class='dimension'>Vice Captain</td>
+                    <td class='metric'>{{ total_vice_captain_points | intcomma }}</td>
+                  </tr>
+                  <tr>
+                    <td class='dimension'>Highest Gameweek Scorer</td>
+                    <td class='metric'>{{ total_top_scorer_points | intcomma }}</td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>     
+        </div>
+
+        <br>
+        <br>
+
+        <div class="row">
+            <div class="col-sm">
+              <span class="basic">Transfers</span>
+              <table class="table table-striped table-borderless rounded-circle">
+                  <tbody>
+                    <tr>
+                      <td class='dimension'>Total Transfers</td>
+                      <td class='metric'>{{total_transfers}}</td>
+                    </tr>
+                    <tr>
+                      <td class='dimension'>Total Points Hits</td>
+                      <td class='metric'>{{total_points_hits}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+            <div class="col-sm">
+              <span class="basic">Bench</span>
+              <table class="table table-striped table-borderless rounded-circle">
+                  <tbody>
+                    <tr>
+                      <td class='dimension'>Total Benched Points</td>
+                      <td class='metric'>{{ total_benched_points }}</td>
+                    </tr>
+                    <tr>
+                      <td class='dimension'>Average Benched Points</td>
+                      <td class='metric'>{{ avg_benched_points }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>     
+          </div>
+
+          <br>
+          <br>
+
+          <h5 class='basic' style='text-align: center;'>Formations</h5>
+          <table class="table table-striped table-borderless rounded-circle">
+              <thead class='formhead'>
+                  <tr>
+                    <th scope="col">Formation</th>
+                    <th scope="col" class='lefty'>Times Used</th>
+                    <th scope="col"class='lefty'>Average Points</th>
+                  </tr>
+                </thead>
+              <tbody>
+                {% for fmt in formations %}{% if fmt.count > 0 %}
+                <tr>
+                  <td class='dimension fmt'>{{fmt.formation}}</td>
+                  <td class='metric'>{{fmt.count}}</td>
+                  <td class='metric'>{{fmt.median}}</td>
+                </tr>
+                {%endif%} {% endfor %}
+                </tr>
+              </tbody>
+            </table>
+
+          <br>
+          <hr>
+          <br>
+
+          <h5 class='basic' style='text-align: center;font-size: 35px;'>Chart My Stats !</h5>
+          <br>
+          <div id="myDiv" style="width:800px;height:350px;"></div>
+          <br>
+          <div id="myDiv2" style="width:800px;height:350px;"></div>
+          <br>
+          <div id="myDiv3" style="width:800px;height:350px;"></div>
+
+          <br>
+          <hr>
+          <br>
+
+          <h5 class='basic' style='text-align: center;font-size: 35px;'>Coming Soon !</h5>
+          <br>
+          <br>
+
+          <h5 class='basic' style='text-align: center;'>Captaincy</h5>
+          <table class="table table-striped table-borderless rounded-circle">
+              <thead class='formhead'>
+                  <tr>
+                    <th scope="col">Captain</th>
+                    <th scope="col" class='lefty'>Times Used</th>
+                    <th scope="col"class='lefty'>Average Points</th>
+                  </tr>
+                </thead>
+              <tbody>
+                <tr>
+                  <td class='dimension' style='font-size: 17px;'>Salah</td>
+                  <td class='metric'>5</td>
+                  <td class='metric'>14</td>
+                </tr>
+                <tr>
+                  <td class='dimension' style='font-size: 17px;'>Sterling</td>
+                  <td class='metric'>10</td>
+                  <td class='metric'>16</td>
+                </tr>
+                <tr>
+                  <td class='dimension' style='font-size: 17px;'>Hazard</td>
+                  <td class='metric'>2</td>
+                  <td class='metric'>18</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <br>
+            <br>
+
+          <h5 class='basic' style='text-align: center;'>Gameweek Overview</h5>
+          <table class="table table-striped table-borderless rounded-circle">
+              <thead class='formhead'>
+                  <tr>
+                    <th scope="col" style='text-align: center;'>GW</th>
+                    <th scope="col" style='text-align: center;'>Points</th>
+                    <th scope="col">Captain</th>
+                    <th scope="col">Formation</th>
+                    <th scope="col" class='lefty'>Rank</th>
+                    <th scope="col" class='lefty'>Highest</th>
+                    <th scope="col" class='lefty'>Average</th>
+                  </tr>
+                </thead>
+              <tbody>
+                <tr>
+                  <td style='text-align: center; font-size: 18px;font-weight: 500;'>1</td>
+                  <td style='text-align: center; font-size: 18px;' >56</td>
+                  <td class='dimension' style='font-size: 17px;'>Salah-20</td>
+                  <td class='dimension fmt'>3 - 5 - 2</td>
+                  <td class='metric'>1,234,567</td>
+                  <td class='metric'>61</td>
+                  <td class='metric'>21</td>
+                </tr>
+                <tr>
+                    <td style='text-align: center; font-size: 18px;font-weight: 500;'>2</td>
+                    <td style='text-align: center; font-size: 18px;'>47</td>
+                    <td class='dimension' style='font-size: 17px;'>Sterling-21</td>
+                    <td class='dimension fmt'>4 - 3 - 3</td>
+                    <td class='metric'>234,688</td>
+                    <td class='metric'>91</td>
+                    <td class='metric'>43</td>
+                  </tr>
+                  <tr>
+                      <td style='text-align: center; font-size: 18px;font-weight: 500;'>3</td>
+                      <td style='text-align: center; font-size: 18px;'>61</td>
+                      <td class='dimension' style='font-size: 17px;'>Hazard-26</td>
+                      <td class='dimension fmt'>3 - 5 - 2</td>
+                      <td class='metric'>145,546</td>
+                      <td class='metric'>71</td>
+                      <td class='metric'>56</td>
+                    </tr>
+              </tbody>
+            </table>
+
+            <br>
+            <br>
+            <br>
+
+            <div class="sharebutton">
+                <button class="btn btn-info mybtn test" type="submit" data-clipboard-text="https://127.0.0.1:8000/chart/{{team_code}}"> <span style="font-size:25px;">share</span></button>
+            </div>
+
+            <br>
+            <br>
+
+
+    </div>
+    <script>
+          /* YOU VS GAMEWEEK PERFORMANCE */
+    var trace1 = {
+    x: {{gws}},
+    y: {{all_gw_points_list}},
+    type: 'scatter',
+    name: 'You',
+    marker: {
+      size: 8
+    },
+    line: {
+      width: 1.5
+    }
+  };
+  
+  var trace2 = {
+    x: {{gws}},
+    y: {{all_avggw_points_list}},
+    type: 'scatter' ,
+    name: 'Average',
+    marker: {
+      size: 8
+    },
+    line: {
+      width: 1.5
+    }
+  };
+  
+  var data = [trace1, trace2];
+  
+  var layout = {
+      title: 'You vs Average Gameweek Performance',
+      font: {
+      family: 'Raleway, sans-serif',
+  
+      size: 14,
+      color: '#37003C',
+      },
+      showlegend: true,
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      
+      xaxis: {
+        title: 'Gameweeks',
+        titlefont: {
+          family: 'Courier New, monospace',
+          size: 18,
+          color: '#502b56'
+        }
+      },
+      yaxis: {
+        title: 'Points',
+        titlefont: {
+          family: 'Courier New, monospace',
+          size: 18,
+          color: '#502b56'
+        }
+      }
+  };
+
+
+  /* OVERALL RANK VS GAMEWEEK RANK TRENDS  */
+  var trace3 = {
+    x: {{gws}},
+    y: {{all_gw_ranks_list}},
+    type: 'scatter',
+    name: 'Overall Rank',
+    marker: {
+      size: 8
+    },
+    line: {
+      width: 1.5
+    }
+  };
+  
+  var trace4 = {
+    x: {{gws}},
+    y: {{all_pergw_ranks_list}},
+    type: 'scatter' ,
+    name: 'Gameweeek Rank',
+    marker: {
+      size: 8
+    },
+    line: {
+      width: 1.5
+    }
+  };
+  
+  var data2 = [trace3, trace4];
+  
+  var layout2 = {
+      title: 'Overall Rank vs Gameweek Rank',
+      font: {
+      family: 'Raleway, sans-serif',
+  
+      size: 14,
+      color: '#37003C',
+      },
+      showlegend: true,
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      
+      xaxis: {
+        title: 'Gameweeks',
+        titlefont: {
+          family: 'Courier New, monospace',
+          size: 18,
+          color: '#502b56'
+        }
+      },
+      yaxis: {
+        title: 'Rank',
+        titlefont: {
+          family: 'Courier New, monospace',
+          size: 18,
+          color: '#502b56'
+        }
+      }
+  };
+
+
+
+  /* CAPTAIN GAMEWEEK PERFORMANCE */
+  var trace5 = {
+    x: {{gws}},
+    y: {{all_captain_points_list}},
+    type: 'scatter',
+    name: 'Captain Points',
+    marker: {
+      size: 8
+    },
+    line: {
+      width: 1.5
+    }
+  };
+  
+  
+  var data3 = [trace5];
+  
+  var layout3 = {
+      title: 'Captain Gameweek Performance',
+      font: {
+      family: 'Raleway, sans-serif',
+  
+      size: 14,
+      color: '#37003C',
+      },
+      showlegend: true,
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      
+      xaxis: {
+        title: 'Gameweeks',
+        titlefont: {
+          family: 'Courier New, monospace',
+          size: 18,
+          color: '#502b56'
+        }
+      },
+      yaxis: {
+        title: 'Points',
+        titlefont: {
+          family: 'Courier New, monospace',
+          size: 18,
+          color: '#502b56'
+        }
+      },
+            shapes: [
+      {
+          type: 'line',
+          xref: 'paper',
+          x0: 0,
+          y0: {{avg_captain_points}},
+          x1: 1,
+          y1: {{avg_captain_points}},
+          line:{
+              color: '#F08536',
+              width: 2,
+              dash:'dot'
+          }
+      }
+      ]
+  };
+
+
+
+  
+  Plotly.newPlot('myDiv', data,layout,{displayModeBar: false});
+  Plotly.newPlot('myDiv2', data2,layout2,{displayModeBar: false});
+  Plotly.newPlot('myDiv3', data3,layout3,{displayModeBar: false});
+
+  $('.test').tooltip({
+          trigger: 'click',
+          placement: 'bottom'
+        });
+        
+        function setTooltip(btn, message) {
+          btn.tooltip('hide')
+            .attr('data-original-title', message)
+            .tooltip('show');
+        }
+        
+        function hideTooltip(btn) {
+          setTimeout(function() {
+            btn.tooltip('hide');
+          }, 1000);
+        }
+        
+        // Clipboard
+        
+        var clipboard = new ClipboardJS('.test');
+        
+        clipboard.on('success', function(e) {
+            var btn = $(e.trigger);
+          setTooltip(btn, 'Copied');
+          hideTooltip(btn);
+        });
+  </script>
+
+      </script>
+    <script src="" async defer></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

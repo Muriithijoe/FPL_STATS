@@ -1,0 +1,69 @@
+{% load humanize %}
+{% load static %}
+
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    {% if title %}
+    <title>Fpl Stats - {{title}}</title>
+    {% else %}
+    <title>Fpl Stats</title>
+    {% endif %}
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Charm|Montserrat:300,400,500|Josefin+Sans:400,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+  </head>
+  <body class='thisbody' >
+    <div class="containea">
+
+        <div class="intro">
+        <h5 class='homeintro'>fantasy stats</h5>
+        <p class="about">• A tool to help you track, build and optimize your FPL team! •</p>
+          </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+
+      <div class="search">
+          <label class="searchtitle"> Enter Team ID </label>
+            <form role="search"  autocomplete="off" action="{% url 'stats' %}">
+                <input class="form-control  form-control-lg teambox"  autocomplete="off" type="search" placeholder="team id" aria-label="Search" name="team">
+                <p></p>
+                <button class="btn btn-info mybtn" type="submit"> <span style="font-size:25px;">stats</span></button>
+              </form>
+      </div>
+
+      </div>
+    <script src="" async defer></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
